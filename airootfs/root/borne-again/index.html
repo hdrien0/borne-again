@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating MP4 Clips Fullscreen</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        video {
+            width: 100vh; /* Adjusted to fit the rotated video */
+            height: 100vw; /* Adjusted to fit the rotated video */
+            object-fit: cover;
+            transform: rotate(-90deg); /* Rotate the video by -90 degrees */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg); /* Center the rotated video */
+        }
+
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <video id="videoPlayer" autoplay muted playsinline></video>
+    <button id="fullscreen-btn">Fullscreen</button>
+
+    <script>
+        // List of MP4 video clips
+        const videoClips = [
+            'clip1.mp4',
+            'clip2.mp4'
+            // 'clip3.mp4'
+        ];
+
+        let currentClip = 0;
+
+        const videoPlayer = document.getElementById('videoPlayer');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        // Load the first video
+        videoPlayer.src = videoClips[currentClip];
+        videoPlayer.load();
+
+        // Function to move to the next video
+        function nextVideo() {
+            currentClip = (currentClip + 1) % videoClips.length;
+            videoPlayer.src = videoClips[currentClip];
+            videoPlayer.load();
+            videoPlayer.play();
+        }
+
+        // Add event listener for when the video can start playing
+        videoPlayer.addEventListener('canplaythrough', () => {
+            videoPlayer.play();
+        });
+
+        // Event listener for when the video ends
+        videoPlayer.addEventListener('ended', nextVideo);
+
+        // Fullscreen functionality
+        function enterFullscreen() {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.mozRequestFullScreen) { // Firefox
+                videoPlayer.mozRequestFullScreen();
+            } else if (videoPlayer.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                videoPlayer.webkitRequestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) { // IE/Edge
+                videoPlayer.msRequestFullscreen();
+            }
+        }
+
+        // Event listener for the fullscreen button
+        fullscreenBtn.addEventListener('click', enterFullscreen);
+    </script>
+</body>
+
+</html>
